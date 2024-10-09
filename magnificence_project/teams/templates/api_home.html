@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnificent Team Builder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #444;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #team-buttons {
+            margin-top: 20px;
+        }
+        h2 {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>⚽ Magnificent Team Builder ⚽</h1>
+    
+    <!-- Button to create the best team with all players -->
+    <button onclick="window.location.href='/api/magnificent-seven/'">Generate Best Team from All Players</button>
+    
+    <h2>Select a Team</h2>
+    <div id="team-buttons">
+        <!-- Placeholder for team buttons -->
+    </div>
+    
+    <script>
+        // Fetch and display all teams dynamically
+        fetch('/api/teams/')
+            .then(response => response.json())
+            .then(data => {
+                const teamButtonsDiv = document.getElementById('team-buttons');
+                teamButtonsDiv.innerHTML = '';  // Clear any existing buttons
+                data.teams.forEach(team => {
+                    const button = document.createElement('button');
+                    button.innerText = `Generate Team for ${team}`;
+                    button.onclick = () => {
+                        window.location.href = `/api/magnificent-seven/team/${team}/`;
+                    };
+                    teamButtonsDiv.appendChild(button);
+                });
+            })
+            .catch(error => console.error('Error fetching teams:', error));
+    </script>
+    
+</body>
+</html>

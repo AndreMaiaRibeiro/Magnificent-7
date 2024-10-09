@@ -46,8 +46,7 @@ Hey, Lead Engineer! I think I know that you know how to start this program, but 
    python manage.py runserver
    ```
 
-Go to the link: /api/magnificent-seven/
-And boom 💥 – you’re ready to roll!
+And you’re all set! Simply head to your browser and open **localhost:8000** – you're automatically redirected to the right routes.
 
 ## Small Test?
 In case you feel like running a test (because why not, right?):
