@@ -62,14 +62,15 @@ class BaseMagnificentSevenView(APIView):
         ]
 
     def calculate_performance_score(self, player):
-        if player.position == 'Goalkeeper':
-            return calculate_gk_score(player)
-        elif player.position == 'Defender':
-            return calculate_def_score(player)
-        elif player.position == 'Midfielder':
-            return calculate_mid_score(player)
-        else:
-            return calculate_fwd_score(player)
+        match player.position:
+            case 'Goalkeeper':
+                return calculate_gk_score(player)
+            case 'Defender':
+                return calculate_def_score(player)
+            case 'Midfielder':
+                return calculate_mid_score(player)
+            case 'Forward':
+                return calculate_fwd_score(player)
 
 
 

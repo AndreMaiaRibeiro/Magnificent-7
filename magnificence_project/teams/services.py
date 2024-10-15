@@ -16,35 +16,48 @@ POSITION_MAP = {
     4: 'Forward',
 }
 
-def fetch_teams_data():
-    """Fetches the team data from the external API."""
+
+def fetch_and_save_players():
+    """Fetches player data and saves it to the database."""
+    data = fetch_data()
+    team_map = build_team_map(data)
+    if team_map:
+        players_data = filter_players_data(data)
+        if players_data:
+            save_player_data_bulk(players_data, team_map)
+
+
+def fetch_data():
+    """Fetches data"""
     try:
         response = requests.get(API_URL)
         response.raise_for_status()
-        return response.json().get('teams', [])
+        return response
     except requests.RequestException as e:
-        print(f"Error fetching team data: {e}")
-        return None
+            print(f"Error fetching data: {e}")
+            return None
 
-def fetch_players_data():
-    """Fetches the player data from the external API."""
-    try:
-        response = requests.get(API_URL)
-        response.raise_for_status()
-        return response.json().get('elements', [])
-    except requests.RequestException as e:
-        print(f"Error fetching player data: {e}")
-        return None
 
-def build_team_map():
+def build_team_map(data):
     """Builds a dynamic map of team IDs to team names."""
-    teams_data = fetch_teams_data()
+    teams_data = filter_teams_data(data)
     team_map = {}
     for team in teams_data:
         team_id = team['id']
         team_name = team['name']
         team_map[team_id] = team_name
     return team_map
+
+
+def filter_players_data(data):
+    """Filter the player data."""
+    return data.json().get('elements', [])
+
+
+def filter_teams_data(data):
+    """Filter the teams data."""
+    return data.json().get('teams', [])
+
 
 def save_player_data_bulk(players_data, team_map):
     """Saves or updates player data in bulk to the database."""
@@ -66,7 +79,6 @@ def save_player_data_bulk(players_data, team_map):
         goals_conceded = player.get('goals_conceded', 0)
         yellow_cards = player.get('yellow_cards', 0)
         red_cards = player.get('red_cards', 0)
-        minutes_played = player.get('minutes', 0)
         penalties_saved = player.get('penalties_saved', 0)
         influence = player.get('influence', 0.0)
         creativity = player.get('creativity', 0.0)
@@ -143,11 +155,3 @@ def save_player_data_bulk(players_data, team_map):
                 'creativity', 'threat', 'expected_goals', 'expected_assists',
                 'expected_goal_involvements', 'expected_goals_conceded', 'total_points'
             ])
-
-def fetch_and_save_players():
-    """Fetches player data and saves it to the database."""
-    team_map = build_team_map()
-    if team_map:
-        players_data = fetch_players_data()
-        if players_data:
-            save_player_data_bulk(players_data, team_map)
